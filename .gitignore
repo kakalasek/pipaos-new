@@ -1,4 +1,4 @@
 **/*.o
-**/*.bin
 os-image
+os-image.iso
 .vscode

@@ -4,19 +4,34 @@ HEADERS = $(wildcard kernel/*.h drivers/*.h)
 OBJ = ${C_SOURCES:.c=.o}
 
 CC = /home/pipa/opt/cross/bin/i686-elf-gcc
+LINKER = linker/linker.ld
 
 CFLAGS=-ffreestanding -O2 -Wall -Wextra
 LDFLAGS=-ffreestanding -O2 -nostdlib
 
-all: boot.o kernel.o
-	$(CC) -T linker.ld -o os-image $(LDFLAGS) boot.o kernel.o -lgcc
+os-image: boot/boot.o kernel/kernel.o
+	$(CC) -T $(LINKER) -o os-image $(LDFLAGS) $^ -lgcc
 
-boot.o: boot/boot.asm
-	nasm -felf32 boot/boot.asm -o boot.o
+run: os-image
+	qemu-system-i386 -kernel os-image
 
-kernel.o: kernel/kernel.c
-	$(CC) -c kernel/kernel.c -o kernel.o $(CFLAGS)
+run-iso: iso
+	qemu-system-i386 -cdrom os-image.iso
+
+iso: os-image
+	cp os-image isofiles/boot
+	grub-mkrescue -o os-image.iso isofiles
+
+boot/boot.o: boot/boot.asm
+	nasm -felf32 $< -o $@
+
+kernel/kernel.o: kernel/kernel.c
+	$(CC) -c $< -o $@ $(CFLAGS)
 
 clean:
-	rm -rf *.bin *.dis *.o os-image *.elf *.o
-	rm -rf kernel/*.o boot/*.bin drivers/*.o boot/*.o
+	rm -rf os-image isofiles/boot/os-image os-image.iso
+	rm -rf boot/*.o
+	rm -rf drivers/*.o
+	rm -rf kernel/*.o
+
+.PHONY: clean kernel run iso
