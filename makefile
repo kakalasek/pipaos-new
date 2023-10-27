@@ -9,7 +9,7 @@ LINKER = linker/linker.ld
 CFLAGS=-ffreestanding -O2 -Wall -Wextra
 LDFLAGS=-ffreestanding -O2 -nostdlib
 
-os-image: boot/boot.o kernel/kernel.o
+os-image: boot/boot.o kernel/kernel.o ${OBJ}
 	$(CC) -T $(LINKER) -o os-image $(LDFLAGS) $^ -lgcc
 
 run: os-image
@@ -25,7 +25,7 @@ iso: os-image
 boot/boot.o: boot/boot.asm
 	nasm -felf32 $< -o $@
 
-kernel/kernel.o: kernel/kernel.c
+%.o: %.c ${HEADERS}
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 clean:
@@ -34,4 +34,4 @@ clean:
 	rm -rf drivers/*.o
 	rm -rf kernel/*.o
 
-.PHONY: clean kernel run iso
+.PHONY: clean kernel run iso run-iso os-image
