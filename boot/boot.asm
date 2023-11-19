@@ -50,11 +50,16 @@ _start:
             ret             ; Returns back to the C code
 
 
+
+; Loads the IDT defined in 'idtp' into the processor
+; This is declared in C as 'extern void idt_load();'
         global idt_load
         extern idtp
         idt_load:
             lidt [idtp]
             ret
+
+; Interrupt service routines
 
 global isr0
 global isr1
@@ -321,23 +326,23 @@ isr_common_stub:
     push es
     push fs
     push gs
-    mov ax, 0x10
+    mov ax, 0x10    ; Load the Kernel Data Segment descriptor
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
-    mov eax, esp
+    mov eax, esp    ; Push us the stack
     push eax
     mov eax, fault_handler
-    call eax
+    call eax        ; A special call, preserves the 'eip' register
     pop eax
     pop gs
     pop fs
     pop es
     pop ds
     popa
-    add esp, 8
-    iret
+    add esp, 8      ; Cleans up the pushed error code and pushed ISR number
+    iret            ; pops 5 things at once: CS, EIP, EFLAGS, SS, and ESP
 
 global irq0
 global irq1

@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c system/*.c gdt/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h system/*.h gdt/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c system/*.c gdt/*.c idt/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h system/*.h gdt/*.h idt/*.h)
 
 OBJ = ${C_SOURCES:.c=.o}
 

@@ -28,4 +28,6 @@ struct gdt_ptr
     reload the new segment registers */
 extern void gdt_flush();
 
+void gdt_install();
+
 #endif
