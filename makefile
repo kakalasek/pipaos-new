@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c system/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h system/*.h)
 
 OBJ = ${C_SOURCES:.c=.o}
 
@@ -33,5 +33,6 @@ clean:
 	rm -rf boot/*.o
 	rm -rf drivers/*.o
 	rm -rf kernel/*.o
+	rm -rf system/*.o
 
 .PHONY: clean kernel run iso run-iso os-image
