@@ -29,20 +29,25 @@ _start:
         jmp .hang
 .end:
 
-        extern gp
-        global gdt_flush
+
+; This will set up our new segment registers. We ned to do
+; something special in order to set CS. We do what is called a
+; far jump. A jump that includes a segment as well as an offset.
+; This is declared in C as 'extern void gdt_flush();'
+        extern gp           ; Says that 'gp' is in another file
+        global gdt_flush    ; Allows the C code to link to this
 
         gdt_flush:
-            lgdt[gp]
-            mov ax, 0x10
+            lgdt[gp]        ; Load the GDT with our 'gp' which is a special pointer
+            mov ax, 0x10    ; 0x10 is the offset in the GDT to our data segment
             mov ds, ax
             mov es, ax
             mov fs, ax
             mov gs, ax
             mov ss, ax
-            jmp 0x08:flush2
+            jmp 0x08:flush2 ; 0x08 is the offster to our code segment: Far jump!
         flush2:
-            ret
+            ret             ; Returns back to the C code
 
 
         global idt_load

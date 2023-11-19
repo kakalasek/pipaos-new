@@ -1,5 +1,5 @@
-#ifndef _KERNEL_VGA_H
-#define _KERNEL_VGA_H
+#ifndef _VGA_H
+#define _VGA_H
 
 #define VGA_CTRL_REGISTER 0x3d4
 #define VGA_DATA_REGISTER 0x3d5
